@@ -1,5 +1,3 @@
-# cloud-incident-monitoring-system
-
 # Cloud Incident Monitoring and Response Platform
 
 ## Project Overview
