@@ -22,23 +22,20 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['Guest', 'User', 'Administrator'],
-    default: 'User' // Default role mapping for new registrations
+    default: 'User'
   }
 }, {
-  timestamps: true // Tracks createdAt and updatedAt for system audit logging (FR8)
+  timestamps: true 
 });
 
-// Cybersecurity Middleware: Automatically hash passwords before saving them to Atlas
-UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+// Modernized Pre-Save Hook (No 'next' callback required for async/await)
+UserSchema.pre('save', async function () {
+  // If the password hasn't changed, exit early and let the promise resolve
+  if (!this.isModified('password')) return;
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
+  // Modern async error handling handles rejections automatically
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 module.exports = mongoose.model('User', UserSchema);

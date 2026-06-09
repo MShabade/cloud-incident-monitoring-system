@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes'); // 🛠️ ADDED: Import your new authentication router tier
 
 // 1. Load configurations from the .env file
 dotenv.config();
@@ -12,6 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 🛠️ ADDED: Mount your API Routing layer onto Express
+app.use('/api/auth', authRoutes); // This activates: /api/auth/register and /api/auth/login
+
 // 3. Connect to MongoDB Atlas Cloud Database
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('🚀 Database Pipeline Status: CONNECTED TO MONGO-ATLAS'))
@@ -19,9 +23,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 // 4. Base Health Check Route
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    message: 'Server engine and environment configuration verified!' 
+  res.json({
+    status: 'healthy',
+    message: 'Server engine and environment configuration verified!'
   });
 });
 
