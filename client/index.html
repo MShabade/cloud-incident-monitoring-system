@@ -1,158 +1,341 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-[#11131a]">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloud Metrics Analytics Engine</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>CloudOps — Incident Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
 </head>
-<body class="h-full text-slate-200 font-sans antialiased text-[11px] bg-[#11131a]">
+<body>
 
-  <div id="loginView" class="min-h-screen flex items-center justify-center bg-[#090a0f] p-4">
-    <div class="bg-[#1c1e27] border border-[#2d313e] w-full max-w-sm rounded-lg p-6 space-y-6 shadow-2xl">
-      <div class="space-y-1">
-        <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-          <span class="h-2.5 w-2.5 rounded bg-red-500 animate-pulse"></span> Infrastructure Data Portal
-        </h1>
-        <p class="text-slate-400 text-[10px]">Provide verified credentials to access real-time diagnostic systems.</p>
+  <!-- ═══ LOGIN ═══ -->
+  <div id="loginPage" class="login-page">
+    <div class="login-brand">
+      <div class="login-brand-content">
+        <div class="brand-logo">
+          <div class="brand-logo-icon">CO</div>
+          <span class="brand-logo-text">CloudOps</span>
+        </div>
+        <h1>Enterprise incident management for cloud operations</h1>
+        <p>Unified monitoring, response, and resolution for multi-cloud infrastructure. Built for SRE, DevOps, and platform engineering teams.</p>
       </div>
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block font-bold uppercase text-slate-400 tracking-wider text-[9px]">Operator Email</label>
-          <input type="email" id="email" value="ops@platform.com" required class="mt-1 block w-full bg-[#11131a] border border-[#2d313e] rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 text-xs">
-        </div>
-        <div>
-          <label class="block font-bold uppercase text-slate-400 tracking-wider text-[9px]">System Security Key</label>
-          <input type="password" id="password" value="SecurePassword123" required class="mt-1 block w-full bg-[#11131a] border border-[#2d313e] rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 text-xs">
-        </div>
-        <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-500 font-bold text-white rounded text-xs transition-all shadow">
-          Establish System Telemetry Link
-        </button>
-      </form>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="login-card">
+        <h2>Sign in to your account</h2>
+        <p class="subtitle">Enter your credentials to access the operations portal</p>
+
+        <p id="loginFormError" class="form-error hidden" style="margin-bottom:1rem;text-align:center"></p>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Work email</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="name@company.com" autocomplete="email">
+            <p id="loginEmailError" class="form-error hidden"></p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" autocomplete="current-password">
+            <p id="loginPasswordError" class="form-error hidden"></p>
+          </div>
+
+          <div class="form-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberMe"> Remember me
+            </label>
+            <a href="#" id="forgotPassword">Forgot password?</a>
+          </div>
+
+          <button type="submit" id="loginSubmit" class="btn btn-primary">Sign in</button>
+        </form>
+
+        <p style="text-align:center;margin-top:1.5rem;font-size:.75rem;color:var(--text-muted)">
+          Protected by enterprise SSO &amp; MFA policies
+        </p>
+      </div>
     </div>
   </div>
 
-  <div id="dashboardView" class="hidden min-h-screen flex flex-col bg-[#11131a]">
-    
-    <header class="bg-[#1c1e27] border-b border-[#2d313e] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0">
-      <div class="flex items-center space-x-2">
-        <span class="text-white font-bold text-sm tracking-tight flex items-center gap-1.5">
-          ⭐ CloudCommand.<span class="text-slate-400 font-medium">ist</span> ▾
-        </span>
-        <span class="text-slate-500 text-xs">/</span>
-        <span class="text-slate-400 font-mono text-[10px] bg-[#11131a] px-2 py-0.5 rounded border border-[#2d313e]">
-          User: <span id="userBadge" class="text-white font-bold">-</span> [<span id="roleBadge" class="text-amber-400 font-medium">-</span>]
-        </span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button id="logoutBtn" class="px-2.5 py-1 bg-[#252834] hover:bg-red-900/40 text-slate-400 hover:text-red-400 border border-[#373c4d] rounded font-medium transition-all">Disconnect</button>
-        <button class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded shadow transition-all">+ Add Widgets</button>
-      </div>
-    </header>
+  <!-- ═══ APP SHELL ═══ -->
+  <div id="appShell" class="app-shell hidden">
 
-    <section class="bg-[#161821] border-b border-[#2d313e] px-4 py-1.5 flex flex-wrap items-center gap-2 text-[10px] font-mono text-slate-400 shrink-0">
-      <div>Filter by:</div>
-      <div class="bg-[#21232d] border border-[#2d313e] px-2 py-0.5 rounded">cluster: <span class="text-white font-bold">*</span> ▾</div>
-      <div class="bg-[#21232d] border border-[#2d313e] px-2 py-0.5 rounded">env: <span class="text-white font-bold">production</span> ▾</div>
-      <div class="bg-[#21232d] border border-[#2d313e] px-2 py-0.5 rounded">region: <span class="text-white font-bold">us-east-1</span> ▾</div>
-      <div class="ml-auto bg-[#21232d] border border-[#2d313e] px-3 py-0.5 rounded text-slate-300">⏳ Past 1 Hour ▾</div>
-    </section>
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo-icon" style="width:32px;height:32px;font-size:.85rem">CO</div>
+        <span style="font-weight:700;font-size:.9rem">CloudOps</span>
+      </div>
 
-    <main class="flex-1 p-3 overflow-y-auto space-y-3">
-      
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="bg-[#e13c4b] text-white p-3 rounded shadow-md flex flex-col justify-between min-h-[90px]">
-          <div class="font-bold tracking-wide uppercase text-[9px] opacity-90">CRITICAL FAILING REPLICAS VALUE</div>
-          <div class="text-3xl font-black tracking-tighter my-1 flex items-baseline">
-            <span id="kpiCriticalCount">0</span><span class="text-xs font-normal ml-1">Clusters</span>
-          </div>
-          <div class="text-[9px] opacity-75 font-mono">Requires Administrator Action Clearance</div>
-        </div>
-        <div class="bg-[#e13c4b] text-white p-3 rounded shadow-md flex flex-col justify-between min-h-[90px]">
-          <div class="font-bold tracking-wide uppercase text-[9px] opacity-90">AVG CHECKOUT TIME DEGRADATION</div>
-          <div class="text-3xl font-black tracking-tighter my-1">45.3<span class="text-sm font-normal">s</span></div>
-          <div class="text-[9px] opacity-75 font-mono">Lambda Outliers Tracked Regionally</div>
-        </div>
-        <div class="bg-[#1c1e27] border border-[#2d313e] text-white p-3 rounded shadow-md flex flex-col justify-between min-h-[90px]">
-          <div class="font-bold tracking-wide uppercase text-[9px] text-slate-400">LIVE CLOUD CONNECTIONS LINKED</div>
-          <div class="text-3xl font-black tracking-tighter my-1 text-slate-100 font-mono">64k<span class="text-xs text-slate-400 font-normal ml-0.5">USD</span></div>
-          <div class="text-[9px] text-emerald-400 font-mono flex items-center gap-1">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> MongoDB Atlas Pipe Stable
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-nav="dashboard">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" data-nav="incidents">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          Incidents
+        </button>
+        <button class="nav-item" id="navCreate" data-nav="create-incident">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          New Incident
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar" id="userInitials">—</div>
+          <div>
+            <div id="userName" style="font-weight:600">—</div>
+            <div id="userRole" style="color:var(--text-muted);font-size:.7rem">—</div>
           </div>
         </div>
-        <div class="bg-[#e09a25] text-[#11131a] p-3 rounded shadow-md flex flex-col justify-between min-h-[90px]">
-          <div class="font-bold tracking-wide uppercase text-[9px] text-amber-950 font-black">ACTIVE UNRESOLVED TRACKS RATIO</div>
-          <div class="text-3xl font-black tracking-tighter my-1 text-white">0.33%</div>
-          <div class="text-[9px] text-amber-950 font-mono font-bold">Total Platform System Degradation</div>
+        <button id="themeToggle" class="btn btn-ghost btn-sm" style="width:100%;margin-top:.75rem">Light mode</button>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm" style="width:100%;margin-top:.35rem;color:var(--danger)">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+
+      <!-- DASHBOARD -->
+      <section data-view="dashboard" class="active">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Operations Dashboard</h1>
+            <p class="page-subtitle">Real-time infrastructure and incident overview</p>
+          </div>
+          <div class="header-actions">
+            <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
+            <span id="lastUpdated" style="font-size:.7rem;color:var(--text-muted)"></span>
+            <div class="range-tabs">
+              <button class="range-tab active" data-range="24h">24h</button>
+              <button class="range-tab" data-range="7d">7d</button>
+              <button class="range-tab" data-range="30d">30d</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="dashboardError" class="hidden panel" style="border-color:var(--danger);margin-bottom:1rem">
+          <div class="error-state" style="padding:1.5rem">
+            <h3>Unable to load dashboard</h3>
+            <p id="dashboardErrorMsg"></p>
+            <button id="dashboardRetry" class="btn btn-secondary btn-sm" style="margin-top:1rem">Retry</button>
+          </div>
+        </div>
+
+        <div id="dashboardSkeleton">
+          <div class="kpi-grid">
+            <div class="skeleton skeleton-kpi"></div>
+            <div class="skeleton skeleton-kpi"></div>
+            <div class="skeleton skeleton-kpi"></div>
+            <div class="skeleton skeleton-kpi"></div>
+            <div class="skeleton skeleton-kpi"></div>
+            <div class="skeleton skeleton-kpi"></div>
+          </div>
+          <div class="grid-2">
+            <div class="skeleton skeleton-chart"></div>
+            <div class="skeleton skeleton-chart"></div>
+          </div>
+        </div>
+
+        <div id="dashboardContent" class="hidden">
+          <div id="kpiGrid" class="kpi-grid"></div>
+
+          <div class="grid-2" style="margin-bottom:1.25rem">
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Incident Trend</span></div>
+              <div class="chart-box"><canvas id="chartTrend"></canvas></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Severity Distribution</span></div>
+              <div class="chart-box"><canvas id="chartSeverity"></canvas></div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:1.25rem">
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">API Latency (p99)</span></div>
+              <div class="chart-box"><canvas id="chartLatency"></canvas></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">CPU & Memory Utilization</span></div>
+              <div class="chart-box"><canvas id="chartResources"></canvas></div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-bottom:1.25rem">
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Cloud Regions</span></div>
+              <div id="regionHealth" class="infra-list"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Containers</span></div>
+              <div id="containerStats" class="infra-list"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Database</span></div>
+              <div id="dbStats"></div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:1.25rem">
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Queue Health</span></div>
+              <div id="queueStats" class="infra-list"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><span class="panel-title">Network Throughput</span></div>
+              <div id="networkStats" class="infra-list"></div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-bottom:1.25rem">
+            <div class="panel-header"><span class="panel-title">Service Health</span></div>
+            <div id="serviceHealth" class="infra-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Recent Incidents</span>
+              <button class="btn btn-ghost btn-sm" id="viewAllIncidents">View all →</button>
+            </div>
+            <div id="recentIncidents"></div>
+          </div>
         </div>
       </section>
 
-      <section class="grid grid-cols-12 gap-3">
-        
-        <div class="col-span-12 lg:col-span-5 bg-[#1c1e27] border border-[#2d313e] rounded flex flex-col">
-          <div class="p-2 border-b border-[#2d313e] font-bold text-white uppercase tracking-wider flex justify-between items-center bg-[#161821]">
-            <span>Latency by Active MongoDB Incidents</span>
-            <span class="text-[9px] text-slate-500 font-mono">Live Rows</span>
+      <!-- INCIDENT LIST -->
+      <section data-view="incidents" class="hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Incidents</h1>
+            <p class="page-subtitle">Search, filter, and manage active incidents</p>
           </div>
-          <div id="incidentTableBody" class="p-2 space-y-1 overflow-y-auto max-h-[380px] flex-1 font-mono">
-            </div>
         </div>
 
-        <div class="col-span-12 lg:col-span-7 grid grid-cols-2 gap-3">
-          
-          <div class="bg-[#1c1e27] border border-[#2d313e] rounded p-3 flex flex-col justify-between h-[150px]">
-            <div class="font-bold text-slate-400 uppercase tracking-wider text-[10px] border-b border-[#2d313e] pb-1">cloudwatch.checkouts.failed</div>
-            <div class="flex items-end justify-between h-16 pt-2 px-2 border-b border-[#2d313e]">
-              <div class="w-2 bg-red-500/30 h-4"></div><div class="w-2 bg-red-500/40 h-8"></div>
-              <div class="w-2 bg-red-500/80 h-14 animate-pulse"></div><div class="w-2 bg-red-500 h-12"></div>
+        <div class="filters-bar">
+          <input type="search" id="incidentSearch" class="form-input search-input" placeholder="Search by ID, title, or service...">
+          <select id="filterSeverity" class="form-input filter-select"></select>
+          <select id="filterStatus" class="form-input filter-select"></select>
+        </div>
+
+        <div class="panel" style="padding:0;overflow:hidden">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Incident ID</th>
+                  <th>Title</th>
+                  <th>Severity</th>
+                  <th>Status</th>
+                  <th>Service</th>
+                  <th>Region</th>
+                  <th>Team</th>
+                  <th>Detected</th>
+                </tr>
+              </thead>
+              <tbody id="incidentTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" style="padding:0 1rem">
+            <span id="paginationInfo">—</span>
+            <div class="pagination-btns">
+              <button id="prevPage" class="btn btn-ghost btn-sm">Previous</button>
+              <button id="nextPage" class="btn btn-ghost btn-sm">Next</button>
             </div>
-            <div class="flex justify-between text-[9px] text-slate-500 font-mono mt-1"><span>09:30</span><span>10:00</span></div>
           </div>
-
-          <div class="bg-[#1c1e27] border border-[#2d313e] rounded p-3 flex flex-col justify-between h-[150px]">
-            <div class="font-bold text-slate-400 uppercase tracking-wider text-[10px] border-b border-[#2d313e] pb-1">cloudwatch.checkouts.success</div>
-            <div class="flex items-end justify-between h-16 pt-2 px-2 border-b border-[#2d313e]">
-              <div class="w-2 bg-emerald-500 h-14"></div><div class="w-2 bg-emerald-500/80 h-10"></div>
-              <div class="w-2 bg-emerald-500/90 h-12"></div><div class="w-2 bg-emerald-500/50 h-6"></div>
-            </div>
-            <div class="flex justify-between text-[9px] text-slate-500 font-mono mt-1"><span>09:30</span><span>10:00</span></div>
-          </div>
-
-          <div id="reportSection" class="col-span-2 bg-[#1c1e27] border border-[#2d313e] rounded p-3 space-y-2">
-            <div class="font-bold text-white uppercase tracking-wider text-[10px] border-b border-[#2d313e] pb-1">Broadcast Custom Incident Event Telemetry</div>
-            <form id="incidentForm" class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-[11px]">
-              <input type="text" id="title" placeholder="Incident Title Reference" required class="sm:col-span-2 bg-[#11131a] border border-[#2d313e] rounded p-1.5 text-white focus:outline-none focus:border-blue-500 font-mono">
-              
-              <select id="issueType" required class="bg-[#11131a] border border-[#2d313e] rounded p-1.5 text-slate-400 font-mono">
-                <option value="" disabled selected>Issue Type</option>
-                <option value="Bug">Software Bug</option>
-                <option value="Outage">System Outage</option>
-                <option value="Security Alert">Security Alert</option>
-                <option value="Hardware Failure">Hardware Failure</option>
-              </select>
-
-              <input type="text" id="assignedTo" placeholder="Assignee Staff" class="bg-[#11131a] border border-[#2d313e] rounded p-1.5 text-white focus:outline-none focus:border-blue-500 font-mono">
-              
-              <select id="cloudService" class="bg-[#11131a] border border-[#2d313e] rounded p-1.5 text-slate-400 font-mono">
-                <option value="AWS">AWS Cloud</option><option value="Azure">Azure Core</option><option value="GCP">Google GCP</option>
-              </select>
-
-              <select id="severity" class="bg-[#11131a] border border-[#2d313e] rounded p-1.5 text-slate-400 font-mono">
-                <option value="Low">Low Risk</option><option value="Medium">Medium Warn</option><option value="High">High Critical</option>
-              </select>
-
-              <textarea id="description" placeholder="Trace payload specifications details..." required class="sm:col-span-2 bg-[#11131a] border border-[#2d313e] rounded p-1.5 text-white h-8 focus:outline-none focus:border-blue-500 font-mono"></textarea>
-              <button type="submit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-500 font-bold text-white rounded py-1.5 transition-all shadow">Dispatch Payload</button>
-            </form>
-          </div>
-
         </div>
       </section>
+
+      <!-- INCIDENT DETAIL -->
+      <section data-view="incident-detail" class="hidden">
+        <div id="incidentDetailContent"></div>
+      </section>
+
+      <!-- CREATE INCIDENT -->
+      <section data-view="create-incident" class="hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Create Incident</h1>
+            <p class="page-subtitle">Report a new infrastructure or service incident</p>
+          </div>
+        </div>
+
+        <form id="createForm" class="panel" style="max-width:720px">
+          <div class="form-group">
+            <label class="form-label" for="createTitle">Incident Title</label>
+            <input type="text" id="createTitle" class="form-input" required placeholder="Brief description of the incident">
+          </div>
+
+          <div class="grid-2" style="gap:1rem">
+            <div class="form-group">
+              <label class="form-label" for="createSeverity">Severity</label>
+              <select id="createSeverity" class="form-input" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="createStatus">Status</label>
+              <select id="createStatus" class="form-input"></select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:1rem">
+            <div class="form-group">
+              <label class="form-label" for="createIssueType">Issue Type</label>
+              <select id="createIssueType" class="form-input" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="createRegion">Region</label>
+              <select id="createRegion" class="form-input" required></select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:1rem">
+            <div class="form-group">
+              <label class="form-label" for="createProvider">Cloud Provider</label>
+              <select id="createProvider" class="form-input" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="createService">Service Impacted</label>
+              <select id="createService" class="form-input" required></select>
+            </div>
+          </div>
+
+          <div class="grid-2" style="gap:1rem">
+            <div class="form-group">
+              <label class="form-label" for="createTeam">Assigned Team</label>
+              <select id="createTeam" class="form-input" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="createOwner">Owner</label>
+              <input type="text" id="createOwner" class="form-input" placeholder="Engineer name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="createDescription">Description</label>
+            <textarea id="createDescription" class="form-input" rows="4" required placeholder="Impact, symptoms, and initial findings"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="createRootCause">Root Cause (if known)</label>
+            <textarea id="createRootCause" class="form-input" rows="3" placeholder="Optional — document if already identified"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:auto;padding:.65rem 2rem">Create Incident</button>
+        </form>
+      </section>
+
     </main>
   </div>
 
-  <div id="editModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-    <div class="bg-[#1c1e27] border border-[#2d313e] w-full max-w-sm rounded p-4 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-[#2d313e] pb-2">
-        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Modify Incident Parameters</h3>
-        <button onclick="close
+  <script
+    src="/vendor/chart.umd.min.js"
+    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js'">
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
