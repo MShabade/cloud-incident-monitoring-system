@@ -56,3 +56,19 @@ exports.updateIncident = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+// 4. Delete Incident (Admin Only)
+exports.deleteIncident = async (req, res) => {
+  try {
+    const incident = await Incident.findByIdAndDelete(req.params.id);
+
+    if (!incident) {
+      return res.status(404).json({ message: 'Incident not found' });
+    }
+
+    res.json({ message: 'Incident successfully purged from cloud records' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error eliminating incident records', error: error.message });
+  }
+};

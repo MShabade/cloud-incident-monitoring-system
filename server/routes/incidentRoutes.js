@@ -3,21 +3,24 @@ const router = express.Router();
 const { 
   createIncident, 
   getAllIncidents, 
-  updateIncident 
+  updateIncident,
+  deleteIncident // Added delete controller link
 } = require('../controllers/incidentController');
 
-// Import the security middleware gatekeepers
 const { protect, restrictTo } = require('../middleware/authMiddleware');
 
-// 1. Create Incident (FR3) & Get All Incidents (FR7)
-// Anyone who is logged in (protected) can view or report an incident
+// --- 1. Root Endpoints (/api/incidents) ---
 router.route('/')
-  .post(protect, createIncident)
-  .get(protect, getAllIncidents);
+  // READ: Open to everyone authenticated (Admin, User, Guest)
+  .get(protect, getAllIncidents)
+  // CREATE: Restricted to Admin and User only (Guest is blocked!)
+  .post(protect, restrictTo('Administrator', 'User'), createIncident);
 
-// 2. Update Incident Status / Assignment (FR4, FR5, FR6)
-// We protect this route, and restrict it so ONLY users with the 'Administrator' role can modify incidents
+// --- 2. ID Specific Endpoints (/api/incidents/:id) ---
 router.route('/:id')
-  .put(protect, restrictTo('Administrator'), updateIncident);
+  // UPDATE: Restricted to Admin and User only (Guest is blocked!)
+  .put(protect, restrictTo('Administrator', 'User'), updateIncident)
+  // DELETE: Strictly restricted to Administrator only (User and Guest are blocked!)
+  .delete(protect, restrictTo('Administrator'), deleteIncident);
 
 module.exports = router;
