@@ -17,7 +17,8 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 8
   },
   role: {
     type: String,
@@ -25,17 +26,17 @@ const UserSchema = new mongoose.Schema({
     default: 'User'
   }
 }, {
-  timestamps: true 
+  timestamps: true
 });
 
-// Modernized Pre-Save Hook (No 'next' callback required for async/await)
 UserSchema.pre('save', async function () {
-  // If the password hasn't changed, exit early and let the promise resolve
   if (!this.isModified('password')) return;
-
-  // Modern async error handling handles rejections automatically
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+UserSchema.methods.comparePassword = function (candidate) {
+  return bcrypt.compare(candidate, this.password);
+};
 
 module.exports = mongoose.model('User', UserSchema);
