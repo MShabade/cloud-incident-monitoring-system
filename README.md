@@ -31,7 +31,7 @@ This project addresses these challenges through a secure cloud-native incident m
 * Provide monitoring dashboards
 * Maintain audit trails
 * Improve security and accountability
-* Demonstrate modern MERN architecture
+* Demonstrate modern full-stack JavaScript architecture
 
 ---
 
@@ -62,14 +62,15 @@ This project addresses these challenges through a secure cloud-native incident m
 
 ### Frontend
 
-* React
-* React Router
-* Axios
+* Vanilla JavaScript (ES modules)
+* Chart.js
+* Custom CSS design system
 
 ### Backend
 
 * Node.js
 * Express.js
+* Socket.IO
 
 ### Database
 
@@ -95,3 +96,17 @@ This project addresses these challenges through a secure cloud-native incident m
 
 This project follows an incremental Agile development approach using GitHub for source control and iterative feature delivery.
 
+---
+
+## Local Development
+
+```bash
+cd server
+cp .env.example .env   # add MONGO_URI and JWT_SECRET
+npm install
+npm run seed:users
+npm run seed:incidents
+npm run dev
+```
+
+Open `http://localhost:5000` in the browser. Demo logins are created by the seed script (`ops@platform.com`, `engineer@platform.com`, `guest@platform.com`).
