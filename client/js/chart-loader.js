@@ -1,7 +1,7 @@
 const CDN = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';
 const LOCAL = '/vendor/chart.umd.min.js';
 
-function waitForChart(maxMs = 8000) {
+function waitForChart(maxMs = 10000) {
   return new Promise((resolve, reject) => {
     if (window.Chart) return resolve();
 
