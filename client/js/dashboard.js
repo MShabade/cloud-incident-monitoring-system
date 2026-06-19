@@ -111,7 +111,7 @@ export async function loadDashboard(showSkeleton = true) {
 function renderKPIs(obsKpis = {}, metrics = {}) {
   const kpis = [
     { label: 'System Availability', value: `${obsKpis.availability ?? '—'}%`, delta: '+0.02% vs yesterday', positive: true },
-    { label: 'Active Incidents', value: metrics.activeIncidents ?? obsKpis.activeIncidents ?? 0, delta: `${metrics.slaBreached || 0} SLA at risk`, positive: !metrics.slaBreached },
+    { label: 'Active Incidents', value: metrics.activeIncidents ?? obsKpis.activeIncidents ?? 0, delta: metrics.activeIncidents ? `${metrics.slaBreached || 0} SLA at risk` : 'No open incidents', positive: !metrics.slaBreached },
     { label: 'MTTR', value: `${metrics.mttrMinutes || obsKpis.mttrMinutes || 0}m`, delta: 'Mean time to resolution', positive: true },
     { label: 'Error Rate', value: `${obsKpis.errorRate ?? '—'}%`, delta: 'Within SLO threshold', positive: true },
     { label: 'Requests/sec', value: (obsKpis.requestsPerSec ?? 0).toLocaleString(), delta: 'Peak: 12.4k rps', positive: true },
