@@ -68,7 +68,8 @@ app.get('/api/health', async (req, res) => {
   res.status(dbOk ? 200 : 503).json({
     status: dbOk ? 'healthy' : 'degraded',
     db: dbOk ? 'connected' : 'disconnected',
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
   });
 });
 
