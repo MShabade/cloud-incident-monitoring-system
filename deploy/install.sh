@@ -12,6 +12,9 @@ command -v node >/dev/null || {
   sudo apt-get install -y nodejs nginx
 }
 
+NODE_MAJOR=$(node -p "process.versions.node.split('.')[0]" 2>/dev/null || echo 0)
+[[ "$NODE_MAJOR" -ge 18 ]] || { echo "Node 18+ required (found v$(node -v 2>/dev/null || echo unknown))"; exit 1; }
+
 # App
 cd server && npm install --omit=dev && node scripts/copy-vendor.js 2>/dev/null || true
 cd ..
