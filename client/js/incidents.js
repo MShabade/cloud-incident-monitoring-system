@@ -109,7 +109,7 @@ export async function loadIncidentList() {
     state.total = Array.isArray(data) ? data.length : (data.pagination?.total || 0);
 
     if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><h3>No incidents found</h3><p>Adjust filters or create a new incident.</p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><h3>No incidents found</h3><p>Try clearing filters or create a new incident if you have access.</p></div></td></tr>`;
     } else {
       tbody.innerHTML = rows.map((i) => `
         <tr data-id="${i._id}">
