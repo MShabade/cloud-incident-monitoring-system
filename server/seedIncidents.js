@@ -106,6 +106,25 @@ const SAMPLE_INCIDENTS = [
       { type: 'detection', message: 'Auth failure rate exceeded 5% threshold', author: 'Datadog', timestamp: new Date(Date.now() - 90000000) },
       { type: 'resolution', message: 'Certificate propagated. All regions healthy. Incident resolved.', author: 'Victor Stein', timestamp: new Date(Date.now() - 86400000) }
     ]
+  },
+  {
+    incidentId: 'INC-2026-0042',
+    title: 'GCP Cloud Storage elevated 503 errors — europe-west1',
+    description: 'Multiple customers reporting upload failures in europe-west1 bucket region.',
+    severity: 'High',
+    status: 'Monitoring',
+    cloudProvider: 'GCP',
+    affectedService: 'Cloud Storage',
+    region: 'europe-west1',
+    assignedTeam: 'Platform Engineering',
+    assignedToPerson: 'Priya Nair',
+    source: 'Customer Reports',
+    detectedAt: new Date(Date.now() - 7200000),
+    slaDeadline: new Date(Date.now() + 3600000),
+    timeline: [
+      { type: 'detection', message: 'Support tickets spiked for GCS upload timeouts', author: 'Support Bot', timestamp: new Date(Date.now() - 7200000) },
+      { type: 'update', message: 'Google status page confirms partial outage. Mitigation in progress.', author: 'Priya Nair', timestamp: new Date(Date.now() - 3600000) }
+    ]
   }
 ];
 
