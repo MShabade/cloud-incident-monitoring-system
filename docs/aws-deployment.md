@@ -2,6 +2,8 @@
 
 Launch **Ubuntu 22.04** EC2 (ports **22** + **80** open). Add EC2 IP to **MongoDB Atlas → Network Access**.
 
+**Security group:** allow inbound HTTP (80) from `0.0.0.0/0` for demo access, SSH (22) only from your IP.
+
 If you already have `server/.env` configured, you only need **2 commands**:
 
 ```bash
