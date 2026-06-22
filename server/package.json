@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "seed:users": "node seedUsers.js",
     "seed:incidents": "node seedIncidents.js",
+    "seed:all": "node seedUsers.js && node seedIncidents.js",
     "postinstall": "node scripts/copy-vendor.js || true",
     "setup": "npm install && node scripts/copy-vendor.js",
     "vendor": "node scripts/copy-vendor.js",
