@@ -14,6 +14,7 @@ export function formatDate(iso) {
 export function formatRelative(iso) {
   if (!iso) return '';
   const diff = Date.now() - new Date(iso).getTime();
+  if (diff < 0) return 'just now';
   const mins = Math.floor(diff / 60000);
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
