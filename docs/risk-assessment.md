@@ -36,7 +36,10 @@ Mitigation:
 
 * Use JWT authentication
 * Implement Role-Based Access Control (RBAC)
-* Validate all API inputs
+* Validate all API inputs (express-validator)
+* Rate-limit auth and API routes
+* Use Helmet security headers
+* Webhook endpoints use shared-secret auth instead of JWT
 * Perform security testing
 
 ---
@@ -54,9 +57,10 @@ Low
 
 Mitigation:
 
-* Use environment variables
-* Configure connection retry mechanisms
-* Maintain backup connection configurations
+* Use environment variables for connection strings
+* Configure MongoDB Atlas IP allowlist for EC2 deployment
+* Health check endpoint (`GET /api/health`) reports DB connection state
+* Seed scripts for reproducible demo data
 
 ---
 
@@ -73,16 +77,17 @@ Medium
 
 Mitigation:
 
-* Use documented deployment procedures
-* Test locally before deployment
-* Use PM2 process management
+* Use documented deployment procedures (`docs/aws-deployment.md`, `deploy/install.sh`)
+* Test locally before deployment (`npm run dev` on port 5000)
+* Use PM2 process management and Nginx reverse proxy
+* Copy `.env` securely to the server (never commit secrets)
 
 ---
 
 ### R5 - Knowledge Gap Risk
 
 Description:
-Limited prior experience with MERN stack development.
+Limited prior experience with Node.js full-stack development (Express, MongoDB, Socket.IO, vanilla SPA patterns).
 
 Impact:
 Medium
@@ -92,7 +97,26 @@ High
 
 Mitigation:
 
-* Follow official documentation
-* Maintain learning log
-* Build features incrementally
+* Follow official documentation (Express, Mongoose, Socket.IO, MDN)
+* Maintain learning log (`docs/learning-log.md`)
+* Build features incrementally (auth → incidents → dashboard → real-time → deploy)
+* Keep documentation aligned with actual implementation
 
+---
+
+### R6 - Documentation Drift
+
+Description:
+Early planning documents may describe technologies or features that differ from the final implementation (e.g. planned React frontend vs delivered Vanilla JS SPA).
+
+Impact:
+Low
+
+Probability:
+Medium
+
+Mitigation:
+
+* Review docs against codebase before submission
+* Mark use cases as Implemented / Partial / Not implemented
+* Update architecture and references when stack decisions change
