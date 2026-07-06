@@ -31,9 +31,13 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
       styleSrc: ["'self'", 'https://fonts.googleapis.com', "'unsafe-inline'"],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      styleSrcElem: ["'self'", 'https://fonts.googleapis.com'],
+      styleSrcAttr: ["'unsafe-inline'"],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", 'ws:', 'wss:']
+      connectSrc: ["'self'"],
+      // HTTP-only EC2 deploy — do not upgrade subresources to HTTPS (no TLS on :443)
+      upgradeInsecureRequests: null
     }
   }
 }));

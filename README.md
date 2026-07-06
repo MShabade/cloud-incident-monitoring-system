@@ -8,6 +8,26 @@ The platform provides centralized incident reporting, monitoring dashboards, aud
 
 ---
 
+## Live Demo
+
+**URL:** [http://16.171.40.220](http://16.171.40.220)
+
+**Health check:** [http://16.171.40.220/api/health](http://16.171.40.220/api/health)
+
+Hosted on **AWS EC2** with **MongoDB Atlas**, **Nginx**, and **PM2**.
+
+### Demo credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Administrator | `ops@platform.com` | `SecurePassword123` |
+| User | `engineer@platform.com` | `SecurePassword123` |
+| Guest | `guest@platform.com` | `SecurePassword123` |
+
+> The app is served over **HTTP** for demo purposes. Browsers may show "Not secure" — this is expected without HTTPS.
+
+---
+
 ## Business Problem
 
 Organizations operating cloud infrastructure often struggle to manage incidents consistently across teams.
@@ -110,3 +130,48 @@ npm run dev
 ```
 
 Open `http://localhost:5000` in the browser. Demo logins are created by the seed script (`ops@platform.com`, `engineer@platform.com`, `guest@platform.com`).
+
+---
+
+## Cloud Deployment (AWS EC2)
+
+### Prerequisites
+
+* Ubuntu 22.04 EC2 instance (ports **22** SSH, **80** HTTP open)
+* MongoDB Atlas cluster with EC2 public IP in **Network Access**
+* `server/.env` configured (`MONGO_URI`, `JWT_SECRET`, `CLIENT_ORIGIN=http://YOUR_EC2_IP`)
+
+### Deploy
+
+```bash
+git clone https://github.com/YOUR_USER/cloud-incident-monitoring-system.git
+cd cloud-incident-monitoring-system
+bash deploy/install.sh
+```
+
+Copy `.env` from your local machine if needed:
+
+```bash
+scp -i ~/your-key.pem server/.env ubuntu@EC2_IP:~/cloud-incident-monitoring-system/server/.env
+```
+
+Seed demo data on the server:
+
+```bash
+cd server
+node seedUsers.js
+node seedIncidents.js   # optional
+```
+
+### Useful commands on EC2
+
+```bash
+pm2 status
+pm2 logs cloudops
+pm2 restart cloudops
+sudo systemctl status nginx
+```
+
+Full deployment notes: [docs/aws-deployment.md](docs/aws-deployment.md)
+
+---

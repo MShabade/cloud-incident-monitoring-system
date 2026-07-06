@@ -1,0 +1,4 @@
+*.sh text eol=lf
+*.{html,css,js,cjs,mjs,json} text eol=lf
+deploy/** text eol=lf
+client/** text eol=lf
